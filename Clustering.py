@@ -2,11 +2,14 @@
 
 import sys, argparse
 import numpy as np
+
+import matplotlib
 import matplotlib.pyplot as plt
 
 def main(args):
     points = np.matrix(list(read_vectors(args.data_file)))
     centroids = knn(points, args.clusters)
+
     print(centroids)
 
     # If it is two dimensional and plots aren't disabled, plot it.
@@ -16,8 +19,28 @@ def main(args):
         fig = plt.figure()
         ax1 = fig.add_subplot(111)
 
-        ax1.scatter(points[:,0], points[:,1], c=['r'], marker='s')
-        ax1.scatter(centroids[:,0], centroids[:,1], c=['b'], marker='x')
+        # Plot points and centers by color, so divide them.
+        classes = [[] for _ in range(args.clusters)]
+
+        # For each vector, find the nearest proposed center.
+        for point in points:
+            # Compute the distance from the point to each center.
+            distances = np.linalg.norm(centroids - point, axis = 1)
+            # Find the index of the nearest point.
+            closest_index = distances.argmin()
+            classes[closest_index].append(point)
+
+        for i, center in enumerate(centroids):
+            if len(classes[i]) > 0:
+                # Draw points in the class only if there are some.
+                these_points = np.concatenate(classes[i])
+                ax1.scatter(these_points[:,0], these_points[:,1],
+                        c=args.colormap[i],
+                        marker='s')
+
+            ax1.scatter(center[0], center[1],
+                    c=args.colormap[i],
+                    marker='x')
 
         plt.show()
 
@@ -107,4 +130,7 @@ if __name__ == "__main__":
             help="file from which to read data points")
     parser.add_argument("--noplot", action="store_true",
             help="disable plotting")
+    parser.add_argument("--colormap", type=lambda m: m.split(','),
+            default="red,green,blue,yellow,cyan,brown,lime,pink,purple",
+            help="colors to plot the clusters using")
     sys.exit(main(parser.parse_args()))
