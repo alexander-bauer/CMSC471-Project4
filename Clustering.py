@@ -43,7 +43,7 @@ def knn(vectors, k, positions=None):
         positions_old = positions.copy()
 
         # Keep space for the points to be classified into.
-        classes = [[]] * k
+        classes = [[] for _ in range(k)]
 
         # For each vector, find the nearest proposed center.
         for point in vectors:
@@ -51,7 +51,6 @@ def knn(vectors, k, positions=None):
             distances = np.linalg.norm(positions - point, axis = 1)
             # Find the index of the nearest point.
             closest_index = distances.argmin()
-
             classes[closest_index].append(point)
 
         # For each class that has any points, recompute the proposed center.
