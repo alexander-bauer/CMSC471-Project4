@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 def main(args):
     points = np.matrix(list(read_vectors(args.data_file)))
-    centroids = knn(points, args.clusters)
+    centroids = kmeans(points, args.clusters)
 
     print(centroids)
 
@@ -44,7 +44,7 @@ def main(args):
 
         plt.show()
 
-def knn(vectors, k, positions=None):
+def kmeans(vectors, k, positions=None):
 
     # If there are no vectors to cluster, we can exit here.
     if len(vectors) == 0: return None
