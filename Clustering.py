@@ -1,13 +1,28 @@
-#!env/bin/python
+#!/usr/bin/env python3
 
 import sys, argparse
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 def main(args):
-    pass
+    points = np.matrix(list(read_vectors(args.data_file)))
+    centroids = knn(points, args.clusters)
+    print(centroids)
+
+    # If it is two dimensional and plots aren't disabled, plot it.
+    if points[0].size == 2 and not args.noplot:
+        toplot = np.concatenate([points, centroids], axis=0)
+
+        fig = plt.figure()
+        ax1 = fig.add_subplot(111)
+
+        ax1.scatter(points[:,0], points[:,1], c=['r'], marker='s')
+        ax1.scatter(centroids[:,0], centroids[:,1], c=['b'], marker='x')
+
+        plt.show()
 
 def knn(vectors, k, positions=None):
+
     # If there are no vectors to cluster, we can exit here.
     if len(vectors) == 0: return None
 
@@ -91,4 +106,6 @@ if __name__ == "__main__":
             help="number of clusters (>0)")
     parser.add_argument("data_file", type=argparse.FileType('r'),
             help="file from which to read data points")
+    parser.add_argument("--noplot", action="store_true",
+            help="disable plotting")
     sys.exit(main(parser.parse_args()))
