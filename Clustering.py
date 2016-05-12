@@ -131,6 +131,6 @@ if __name__ == "__main__":
     parser.add_argument("--noplot", action="store_true",
             help="disable plotting")
     parser.add_argument("--colormap", type=lambda m: m.split(','),
-            default="red,green,blue,yellow,cyan,brown,lime,pink,purple",
+            default="red,green,blue,purple,cyan,brown,lime,pink,yellow",
             help="colors to plot the clusters using")
     sys.exit(main(parser.parse_args()))
